@@ -1,0 +1,134 @@
+# coding=utf-8
+from peewee import *
+import time
+import sys
+from werkzeug.security import generate_password_hash, check_password_hash
+import json
+
+try:
+    type(u"a") is unicode
+except:
+    unicode = str
+
+
+try:
+    db = MySQLDatabase(database="qvq",
+                       user="qvq_user",
+                       host="127.0.0.1",
+                       port=3306,
+                       password="123456",
+                       autocommit=True, autorollback=True)
+    db.get_conn().ping(True)
+except:
+    print "cannot connect Mysql"
+    sys.exit(0)
+
+print("Connected to QVQ.")
+
+
+class BaseModel(Model):
+    id = PrimaryKeyField(null=False)
+    created_time = IntegerField(null=False, default=0)
+
+    def __init__(self, *args, **kwargs):
+        super(BaseModel, self).__init__(*args, **kwargs)
+        self.created_time = int(time.time())
+
+    class Meta:
+        database = db
+        auto_increment = True
+
+
+class Config(BaseModel):
+    class Meta:
+        db_table = 'configs'
+
+    key = CharField(null=False, default="")
+    value = CharField(null=False, default="")
+
+    def __init__(self, *args, **kwargs):
+        super(BaseModel, self).__init__(*args, **kwargs)
+
+    def __repr__(self):
+        return '<Config({key!r})>'.format(key=self.key)
+
+
+class User(BaseModel):
+    class Meta:
+        db_table = 'users'
+
+    username = CharField(unique=True, null=False, default="")
+    email = CharField(unique=True, null=False, default="")
+    password = CharField(null=False, default="")
+    domain = CharField(null=False, default="")
+    last_time = IntegerField(null=False, default=0)
+    last_ip = CharField(null=False, default="")
+    reg_ip = CharField(null=False, default="")
+
+    def __init__(self, *args, **kwargs):
+        super(BaseModel, self).__init__(*args, **kwargs)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password, method="pbkdf2:sha256")
+
+    def set_last(self, ip):
+        self.last_ip = ip
+        self.last_time = int(time.time())
+
+    def check_password(self, value):
+        return check_password_hash(self.password, value)
+
+    def __repr__(self):
+        return '<User({username!r})>'.format(username=self.username)
+
+
+class DomainLogs(BaseModel):
+    class Meta:
+        db_table = 'domain_logs'
+
+    domain = TextField(default="", null=False, unique=True)
+    user_id = IntegerField(null=False, default=0)
+
+    def __init__(self, *args, **kwargs):
+        super(BaseModel, self).__init__(*args, **kwargs)
+        self.created_time = int(time.time())
+
+    def __repr__(self):
+        return '<DomainLogs({id!r})>'.format(id=self.id)
+
+
+class DNSLogs(BaseModel):
+    class Meta:
+        db_table = 'dns_logs'
+
+    domain_id = IntegerField(null=False, default=0)
+    ip = CharField(null=False, default="")
+    user_id = IntegerField(null=False, default=0)
+
+    def __init__(self, *args, **kwargs):
+        super(BaseModel, self).__init__(*args, **kwargs)
+        self.created_time = int(time.time())
+
+    def __repr__(self):
+        return '<DNSLogs({id!r})>'.format(id=self.id)
+
+
+class UrlLogs(BaseModel):
+    class Meta:
+        db_table = 'url_logs'
+
+    url = CharField(null=False, default="")
+    ip = CharField(null=False, default="")
+    domain_id = IntegerField(null=False, default=0)
+    packet = TextField(default="", null=False)
+    user_id = IntegerField(null=False, default=0)
+
+    def __init__(self, *args, **kwargs):
+        super(BaseModel, self).__init__(*args, **kwargs)
+        self.created_time = int(time.time())
+
+    def __repr__(self):
+        return '<UrlLogs({id!r})>'.format(id=self.id)
+
+
+db.create_tables([Config, User, DomainLogs, DNSLogs, UrlLogs], safe=True)
