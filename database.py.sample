@@ -1,5 +1,6 @@
 # coding=utf-8
 from peewee import *
+from playhouse.shortcuts import RetryOperationalError
 import time
 import sys
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,14 +12,17 @@ except:
     unicode = str
 
 
+class RetryDB(RetryOperationalError, MySQLDatabase):
+    pass
+
+
 try:
-    db = MySQLDatabase(database="qvq",
+    db = RetryDB(database="qvq",
                        user="qvq_user",
                        host="127.0.0.1",
                        port=3306,
                        password="123456",
                        autocommit=True, autorollback=True)
-    db.get_conn().ping(True)
 except:
     print "cannot connect Mysql"
     sys.exit(0)

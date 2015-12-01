@@ -1,5 +1,5 @@
 #QvQDNS
-一个基于Tornado、Peewee的 DNS 和 HTTP 请求的
+一个基于Tornado、Peewee用于记录 DNS 和 HTTP 请求的工具
 
 ### Fetures
 * DNS 记录
@@ -12,7 +12,7 @@
 ```
 qvqdns.py - DNS服务(记录DNS请求)
 
-web.py - HTTP服务(记录HTTP请求)
+qvqweb.py - HTTP服务(记录HTTP请求)
 
 main.py - 控制面板
 ```
