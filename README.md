@@ -1,21 +1,21 @@
 #QvQDNS
-A DNS request and HTTP request Monitor 
+一个基于Tornado、Peewee的 DNS 和 HTTP 请求的
 
-## Fetures
-* DNS Observer
-* HTTP Observer
+### Fetures
+* DNS 记录
+* HTTP 记录
 
 ## Demo
-* [Demo Link](http://qvq.io)
+* [Demo Link](http://www.qvq.io)
 
-## Running
+### Running
 ```
-qvqdns.py - DNS observe service
+qvqdns.py - DNS服务(记录DNS请求)
 
-web.py - Web observe service
+web.py - HTTP服务(记录HTTP请求)
 
-main.py - Dashboard service
+main.py - 控制面板
 ```
 
-## License
+### License
 MPL
