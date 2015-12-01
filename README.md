@@ -17,5 +17,7 @@ qvqweb.py - HTTP服务(记录HTTP请求)
 main.py - 控制面板
 ```
 
+用 ```gunicorn```  启动控制面板 ```gunicorn main:application -c gunicorn.py```
+
 ### License
 MPL
