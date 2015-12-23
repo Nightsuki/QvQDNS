@@ -18,7 +18,7 @@ class Record(tornado.web.RequestHandler):
                 return
             domain_query = DomainLogs()
             domain_query.user_id = user.id
-            domain_query.domain = self.request.host.split(".")[-3]
+            domain_query.domain = self.request.host
             domain_query.save()
             log = DNSLogs()
             log.ip = self.request.headers.get('X-Forwarded-For')
