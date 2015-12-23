@@ -69,16 +69,11 @@ def start_qvq(domain, ip):
                 user = User.select().where(User.domain == p.dominio.split(domain)[0].split(".")[-1]).first()
                 if user:
                     domain_query = DomainLogs.select().where(DomainLogs.domain == p.dominio[:-1]).first()
-                    if domain_query:
+                    if not domain_query:
                         domain_query = DomainLogs()
                         domain_query.user_id = user.id
                         domain_query.domain = p.dominio[:-1]
                         domain_query.save()
-                    log = DNSLogs()
-                    log.ip = addr[0]
-                    log.user_id = user.id
-                    log.domain_id = domain_query.id
-                    log.save()
                     log = DNSLogs()
                     log.ip = addr[0]
                     log.user_id = user.id
